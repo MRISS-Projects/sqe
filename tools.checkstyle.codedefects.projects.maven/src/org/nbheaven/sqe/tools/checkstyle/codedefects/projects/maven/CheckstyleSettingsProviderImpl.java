@@ -22,6 +22,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
+
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettings;
 import org.nbheaven.sqe.tools.checkstyle.codedefects.core.settings.CheckstyleSettingsProvider;
 import org.nbheaven.sqe.core.maven.api.MavenPluginConfiguration;
@@ -42,6 +45,8 @@ import org.openide.filesystems.FileUtil;
 public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvider {
 
     private final Project p;
+    
+    //private static final Logger logger = Logger.getLogger(CheckstyleSettingsProviderImpl.class.getName());
 
     public CheckstyleSettingsProviderImpl(Project p) {
         this.p = p;
@@ -50,7 +55,10 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
     @Override
     public CheckstyleSettings getCheckstyleSettings() {
         MavenPluginConfiguration pluginConfiguration = MavenUtilities.getReportPluginConfiguration(p, "org.apache.maven.plugins", "maven-checkstyle-plugin");
+        System.out.println("pluginConfiguration.isDefinedInProject() 1: " + pluginConfiguration.isDefinedInProject());
         if (pluginConfiguration.isDefinedInProject()) {
+            //logger.log(Level.INFO, "pluginConfiguration.isDefinedInProject(): " + pluginConfiguration.isDefinedInProject());
+            System.out.println("pluginConfiguration.isDefinedInProject() 2: " + pluginConfiguration.isDefinedInProject());
             String configLocation = pluginConfiguration.getValue("configLocation");
             if (configLocation == null) {
                 configLocation = "config/sun_checks.xml"; //defaultvalue
@@ -90,11 +98,12 @@ public class CheckstyleSettingsProviderImpl implements CheckstyleSettingsProvide
                 URL url = new URL(configLocation);
                 return new CheckstyleSettingsImpl(url, properties);
             } catch (MalformedURLException ex) {
-                // OK, not a URL (no protocol)
+                //logger.log(Level.SEVERE, ex.getMessage(), ex);
             }
                 // TODO: better error handling here - pass it to session and result somehow for display to user
                 //       something like a problem report for executing the tool
         }
+        //logger.log(Level.INFO, "pluginConfiguration.isDefinedInProject(): " + pluginConfiguration.isDefinedInProject());
         return null;
     }
 

@@ -3,5 +3,10 @@
 **/*.orig
 **/*.rej
 **/build/**
+**/build
 **/nbproject/private/**
 /build/
+/bin/
+.project
+.classpath
+.settings
